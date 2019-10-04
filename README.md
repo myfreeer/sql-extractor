@@ -22,6 +22,12 @@ spring:
     password: 123456
 
 export:
+  # Time zone for DateFormatter and TimestampFormatter
+  # example: UTC, GMT+8
+  time-zone: UTC
+  # Locale for DateFormatter and TimestampFormatter
+  # example: en-US, zh-CN
+  locale: en-US
   # path to save sql script
   file-path: C:\export.sql
   # Export type

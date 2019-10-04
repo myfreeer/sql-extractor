@@ -37,6 +37,9 @@ public class SqlExtractorApplication {
     final ExportProperties exportProperties = application.getBean(ExportProperties.class);
     final ExportService exportService = application.getBean(ExportService.class);
     final String exportFilePath = exportProperties.getFilePath();
+    if (log.isDebugEnabled()) {
+      log.debug("ExportProperties: {}", exportProperties);
+    }
     if (exportFilePath == null) {
       throw new IllegalArgumentException("exportFilePath must not be null");
     }

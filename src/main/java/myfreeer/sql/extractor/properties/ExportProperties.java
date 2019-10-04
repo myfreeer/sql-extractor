@@ -1,11 +1,15 @@
 package myfreeer.sql.extractor.properties;
 
 import lombok.Data;
+import myfreeer.sql.extractor.formatter.impl.DateFormatter;
+import myfreeer.sql.extractor.formatter.impl.TimestampFormatter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -30,6 +34,20 @@ public class ExportProperties {
    * Tables to exclude, effective if type is table or full
    */
   private Set<String> excludeTables = Collections.emptySet();
+
+  /**
+   * Time zone for {@link DateFormatter} and {@link TimestampFormatter}
+   * <br/>
+   * Example: UTC, GMT+8
+   */
+  private ZoneId timeZone = ZoneId.systemDefault();
+
+  /**
+   * Locale for {@link DateFormatter} and {@link TimestampFormatter}
+   * <br/>
+   * Example: en-US, zh-CN
+   */
+  private Locale locale = Locale.getDefault();
 
   public List<String> lowerCaseTables() {
     return tables.stream().map(String::toLowerCase).collect(Collectors.toList());

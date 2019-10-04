@@ -50,8 +50,8 @@ public class ExportService {
     final String clobToBlobFnName = exportAllTables(writer, excludeTables);
     if (clobToBlobFnName != null) {
       return OracleClobToBlob.getFunc(clobToBlobFnName) +
-              writer.toString() +
-              OracleClobToBlob.getDropFunc(clobToBlobFnName);
+          writer.toString() +
+          OracleClobToBlob.getDropFunc(clobToBlobFnName);
     }
     return writer.toString();
   }
@@ -70,8 +70,8 @@ public class ExportService {
     final String clobToBlobFnName = exportTables(writer, tables, excludeTables);
     if (clobToBlobFnName != null) {
       return OracleClobToBlob.getFunc(clobToBlobFnName) +
-              writer.toString() +
-              OracleClobToBlob.getDropFunc(clobToBlobFnName);
+          writer.toString() +
+          OracleClobToBlob.getDropFunc(clobToBlobFnName);
     }
     return writer.toString();
   }

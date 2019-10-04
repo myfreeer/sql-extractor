@@ -1,6 +1,8 @@
 package myfreeer.sql.extractor.formatter.impl;
 
 import myfreeer.sql.extractor.formatter.Formatter;
+import myfreeer.sql.extractor.properties.ExportProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
@@ -14,9 +16,18 @@ import java.util.Locale;
 
 @Component
 public class DateFormatter implements Formatter<Date> {
-  private final DateTimeFormatter formatter = DateTimeFormatter
-      .ofPattern(pattern(), locale())
-      .withZone(zone());
+  private final ZoneId zone;
+  private final Locale locale;
+  private final DateTimeFormatter formatter;
+
+  @Autowired
+  public DateFormatter(final ExportProperties properties) {
+    zone = properties.getTimeZone();
+    locale = properties.getLocale();
+    formatter = DateTimeFormatter
+        .ofPattern(pattern(), locale())
+        .withZone(zone());
+  }
 
   protected String pattern() {
     return "yyyy-MM-dd HH:mm:ss";
@@ -31,11 +42,11 @@ public class DateFormatter implements Formatter<Date> {
   }
 
   protected ZoneId zone() {
-    return ZoneId.of("GMT+8");
+    return zone;
   }
 
   protected Locale locale() {
-    return Locale.CHINA;
+    return locale;
   }
 
   @Override

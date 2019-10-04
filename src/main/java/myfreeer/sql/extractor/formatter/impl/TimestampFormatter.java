@@ -1,5 +1,7 @@
 package myfreeer.sql.extractor.formatter.impl;
 
+import myfreeer.sql.extractor.properties.ExportProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
@@ -8,6 +10,11 @@ import java.sql.Types;
 
 @Component
 public class TimestampFormatter extends DateFormatter {
+  @Autowired
+  public TimestampFormatter(final ExportProperties properties) {
+    super(properties);
+  }
+
   @Override
   public int type() {
     return Types.TIMESTAMP;

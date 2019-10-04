@@ -45,9 +45,10 @@ public class FormatService {
 
   /**
    * format value to string
-   * @param rs result set with data
+   *
+   * @param rs     result set with data
    * @param colNum column
-   * @param type jdbc type
+   * @param type   jdbc type
    * @return string suitable for sql script
    * @throws SQLException jdbc fails
    * @see Types
