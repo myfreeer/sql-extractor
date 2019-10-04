@@ -56,6 +56,7 @@ public class ClobFormatter implements StreamingFormatter<Clob> {
         writer.append("]')\n || ")
             .append(toClobFn()).append("(']') || ")
             .append(toClobFn()).append("(q'[");
+        continue;
       }
       if (++lastLen == 2000) {
         writer.append("]')\n || ").append(toClobFn()).append("(q'[");
