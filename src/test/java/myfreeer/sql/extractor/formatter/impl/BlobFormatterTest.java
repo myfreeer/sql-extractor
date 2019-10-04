@@ -121,7 +121,7 @@ public class BlobFormatterTest {
     }
 
     @Test
-    public void nullResult() throws SQLException {
+    public void nullValue() throws SQLException {
         final ResultSet resultSet = resultSet(null);
         final String s = Long.toHexString(RANDOM.nextLong());
         final BlobFormatter blobFormatter = new BlobFormatter(s);
