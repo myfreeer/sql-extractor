@@ -7,12 +7,14 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.Assert.assertEquals;
 
 public class NumberFormatterTest {
-    private static final Random RANDOM = new Random();
+    private static final Random RANDOM = ThreadLocalRandom.current();
 
     private static final NumberFormatter FORMATTER = new NumberFormatter();
 
@@ -39,6 +41,11 @@ public class NumberFormatterTest {
                     .thenReturn(bigDecimal).thenReturn(bigDecimal);
         }
         return resultSet;
+    }
+
+    @Test
+    public void type() {
+        assertEquals(FORMATTER.type(), Types.NUMERIC);
     }
 
     @Test

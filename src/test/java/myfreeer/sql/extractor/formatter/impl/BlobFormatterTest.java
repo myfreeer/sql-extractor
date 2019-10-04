@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.Assert.assertEquals;
 
@@ -18,7 +19,7 @@ public class BlobFormatterTest {
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
     private static final byte[] TEST_DATA1 = new byte[256];
     private static final byte[] TEST_DATA2 = new byte[1234];
-    private static final Random RANDOM = new Random();
+    private static final Random RANDOM = ThreadLocalRandom.current();
 
     static {
         RANDOM.nextBytes(TEST_DATA1);
