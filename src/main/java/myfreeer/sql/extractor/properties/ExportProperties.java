@@ -1,6 +1,7 @@
 package myfreeer.sql.extractor.properties;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 import myfreeer.sql.extractor.formatter.impl.DateFormatter;
 import myfreeer.sql.extractor.formatter.impl.TimestampFormatter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -14,6 +15,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Data
+@Accessors(chain = true)
 @Configuration
 @ConfigurationProperties("export")
 public class ExportProperties {

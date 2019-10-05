@@ -6,7 +6,7 @@ Note: this would not generate ddl.
 ## Prerequisites
 * java 8+
 * maven 3+
-* Manaully get [oracle jdbc driver](https://www.oracle.com/database/technologies/appdev/jdbc-downloads.html), 
+* Manually get [oracle jdbc driver](https://www.oracle.com/database/technologies/appdev/jdbc-downloads.html), 
 rename the jar to `ojdbc6-11.2.0.3.jar` and put it in `lib/com/oracle/ojdbc6/11.2.0.3/`
 
 ## Config
