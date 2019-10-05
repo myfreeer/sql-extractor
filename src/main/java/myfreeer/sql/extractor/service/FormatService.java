@@ -3,6 +3,7 @@ package myfreeer.sql.extractor.service;
 import lombok.extern.slf4j.Slf4j;
 import myfreeer.sql.extractor.formatter.Formatter;
 import myfreeer.sql.extractor.formatter.StreamingFormatter;
+import myfreeer.sql.extractor.util.OracleTypes;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -30,17 +31,22 @@ public class FormatService {
     alternatives.put(Types.DECIMAL, Types.NUMERIC);
     alternatives.put(Types.SMALLINT, Types.NUMERIC);
     alternatives.put(Types.TINYINT, Types.NUMERIC);
-    alternatives.put(Types.DOUBLE, Types.NUMERIC);
+    alternatives.put(OracleTypes.BINARY_FLOAT, Types.NUMERIC);
+    alternatives.put(OracleTypes.BINARY_DOUBLE, Types.NUMERIC);
     alternatives.put(Types.FLOAT, Types.NUMERIC);
+    alternatives.put(Types.DOUBLE, Types.NUMERIC);
     alternatives.put(Types.CHAR, Types.VARCHAR);
     alternatives.put(Types.NCHAR, Types.VARCHAR);
     alternatives.put(Types.NVARCHAR, Types.VARCHAR);
     alternatives.put(Types.LONGNVARCHAR, Types.VARCHAR);
     alternatives.put(Types.LONGVARCHAR, Types.VARCHAR);
+    alternatives.put(Types.ROWID, Types.VARCHAR);
     alternatives.put(Types.REAL, Types.NUMERIC);
+    alternatives.put(Types.TIME, Types.TIMESTAMP);
     alternatives.put(Types.TIME_WITH_TIMEZONE, Types.TIME);
     alternatives.put(Types.TIMESTAMP_WITH_TIMEZONE, Types.TIMESTAMP);
-    alternatives.put(Types.ROWID, Types.VARCHAR);
+    alternatives.put(OracleTypes.TIMESTAMPTZ, Types.TIMESTAMP_WITH_TIMEZONE);
+    alternatives.put(OracleTypes.TIMESTAMPLTZ, Types.TIMESTAMP_WITH_TIMEZONE);
   }
 
   /**
