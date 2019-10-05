@@ -5,6 +5,7 @@ import java.sql.Types;
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
+
 public class TimestampFormatterTest extends DateFormatterTest {
   private final TimestampFormatter formatter = new TimestampFormatter(properties);
 
@@ -36,11 +37,11 @@ public class TimestampFormatterTest extends DateFormatterTest {
   @Override
   public void formatResultSet() throws SQLException {
     final Date now = new Date();
-    assertEquals(formatter.format(now), formatter.format(resultSet(now), 1));
+    assertEquals(formatter().format(now), formatter().format(resultSet(now), 1));
   }
 
   @Override
   public void nullValue() throws SQLException {
-    assertEquals("null", formatter.format(resultSet(null), 1));
+    assertEquals("null", formatter().format(resultSet(null), 1));
   }
 }

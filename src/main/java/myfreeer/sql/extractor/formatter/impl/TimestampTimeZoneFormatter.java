@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 @Slf4j
 public class TimestampTimeZoneFormatter extends TimestampFormatter {
   private static final Pattern PATTERN = Pattern.compile(
-      "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.(\\d+) [+\\-]\\d{1,2}:\\d{2}");
+      "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.(\\d+) [+\\-]?\\d{1,2}:\\d{2}");
 
   @Autowired
   public TimestampTimeZoneFormatter(final ExportProperties properties) {
@@ -32,7 +32,7 @@ public class TimestampTimeZoneFormatter extends TimestampFormatter {
   public String format(final ResultSet resultSet, final int col) throws SQLException {
     final String timestamp = resultSet.getString(col);
     if (timestamp == null) {
-      return "null";
+      return super.format(resultSet, col);
     }
     final Matcher matcher = PATTERN.matcher(timestamp);
     if (!matcher.matches()) {
