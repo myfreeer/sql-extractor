@@ -14,23 +14,29 @@ public class OracleClobToBlob {
   public static String getFunc(final String funcName) {
     //language=Oracle
     return "CREATE OR REPLACE\n" +
-        "    FUNCTION " + funcName + "(hex CLOB) RETURN BLOB IS\n" +
-        "    b BLOB                := NULL;\n" +
-        "    s VARCHAR2(4000 CHAR) := NULL;\n" +
-        "    l NUMBER              := 4000;\n" +
+        "    FUNCTION " + funcName + "(c IN CLOB) RETURN BLOB\n" +
+        "    IS\n" +
+        "    pos     PLS_INTEGER := 1;\n" +
+        "    buffer  RAW(4000);\n" +
+        "    res     BLOB;\n" +
+        "    lob_len PLS_INTEGER := DBMS_LOB.getLength(c);\n" +
         "BEGIN\n" +
-        "    IF hex IS NOT NULL\n" +
-        "    THEN\n" +
-        "        dbms_lob.createtemporary(b, FALSE);\n" +
+        "    DBMS_LOB.createTemporary(res, TRUE);\n" +
+        "    DBMS_LOB.OPEN(res, DBMS_LOB.LOB_ReadWrite);\n" +
         "\n" +
-        "        FOR i IN 0 .. LENGTH(hex) / 4000\n" +
-        "            LOOP\n" +
-        "                dbms_lob.read(hex, l, i * 4000 + 1, s);\n" +
-        "                dbms_lob.append(b, to_blob(hextoraw(s)));\n" +
-        "            END LOOP;\n" +
-        "    END IF;\n" +
+        "    LOOP\n" +
+        "        buffer := hextoraw(DBMS_LOB.SUBSTR(c, 4000, pos));\n" +
         "\n" +
-        "    RETURN b;\n" +
+        "        IF UTL_RAW.LENGTH(buffer) > 0\n" +
+        "        THEN\n" +
+        "            DBMS_LOB.writeAppend(res, UTL_RAW.LENGTH(buffer), buffer);\n" +
+        "        END IF;\n" +
+        "\n" +
+        "        pos := pos + 4000;\n" +
+        "        EXIT WHEN pos > lob_len;\n" +
+        "    END LOOP;\n" +
+        "\n" +
+        "    RETURN res;\n" +
         "END " + funcName + ";\n";
   }
 
