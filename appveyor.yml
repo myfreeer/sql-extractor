@@ -1,0 +1,14 @@
+version: 0.0.1.{build}
+image: Visual Studio 2017
+cache: '%USERPROFILE%\.m2'
+build_script:
+- cmd: mvnw compile
+test_script:
+- cmd: mvnw test package
+artifacts:
+- path: target/sql-extractor-*.jar
+skip_commits:
+  files:
+    - 'LICENSE'
+    - '*.md'
+    - '.gitingore'
