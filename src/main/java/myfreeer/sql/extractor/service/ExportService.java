@@ -81,14 +81,35 @@ public class ExportService {
    *
    * @param writer    writer to write sql script
    * @param tableName table name
+   * @param clobToBlobFnName clob to blob helper function name
    * @return clob to blob helper function name, null if not needed
    * @throws IOException writer IO fail
    */
   public String exportTable(
-      @NonNull final Writer writer, @NonNull final String tableName,
+      @NonNull final Writer writer,
+      @NonNull final String tableName,
+      @Nullable final String clobToBlobFnName) throws IOException {
+    return exportTable(writer, tableName,
+        "select * from " + tableName, clobToBlobFnName);
+  }
+
+  /**
+   * export one table to writer
+   *
+   * @param writer    writer to write sql script
+   * @param tableName table name
+   * @param selectSql select sql statement to select data from table
+   * @param clobToBlobFnName clob to blob helper function name
+   * @return clob to blob helper function name, null if not needed
+   * @throws IOException writer IO fail
+   */
+  public String exportTable(
+      @NonNull final Writer writer,
+      @NonNull final String tableName,
+      @NonNull final String selectSql,
       @Nullable final String clobToBlobFnName) throws IOException {
     try {
-      return jdbcTemplate.query("select * from " + tableName, rs -> {
+      return jdbcTemplate.query(selectSql, rs -> {
         try {
           String realClobToBlobFnName = clobToBlobFnName;
           final ResultSetMetaData metaData = rs.getMetaData();
