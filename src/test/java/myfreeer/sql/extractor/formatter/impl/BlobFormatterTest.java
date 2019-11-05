@@ -43,7 +43,7 @@ public class BlobFormatterTest {
     return resultSet;
   }
 
-  private String toHex(byte[] bytes, int begin, int end) {
+  static String toHex(byte[] bytes, int begin, int end) {
     if (end < 0) {
       end = bytes.length;
     }

@@ -25,6 +25,7 @@ public class FormatService {
     map = new ConcurrentHashMap<>();
     formatters.forEach(f -> map.put(f.type(), f));
     alternatives = new ConcurrentHashMap<>();
+    alternatives.put(Types.BINARY, Types.VARBINARY);
     alternatives.put(Types.BIGINT, Types.NUMERIC);
     alternatives.put(Types.INTEGER, Types.NUMERIC);
     alternatives.put(Types.BIT, Types.NUMERIC);
