@@ -46,7 +46,8 @@ public class ClobFormatter implements StreamingFormatter<Clob> {
     return "TO_CLOB";
   }
 
-  protected void format(final Writer writer, final Clob clob) throws SQLException, IOException {
+  protected void format(final Writer writer, final Clob clob)
+      throws SQLException, IOException {
     final Reader r = clob.getCharacterStream();
     writer.append(toClobFn()).append("(q'[");
     int b, lastLen = 0;

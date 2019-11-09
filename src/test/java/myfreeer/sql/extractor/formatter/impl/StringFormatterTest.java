@@ -1,8 +1,10 @@
 package myfreeer.sql.extractor.formatter.impl;
 
+import myfreeer.sql.extractor.util.StringBuilderWriter;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -35,6 +37,23 @@ public class StringFormatterTest {
           .thenReturn(data).thenReturn(data);
     }
     return resultSet;
+  }
+
+  @Test
+  public void streamResultEqualsStringResult() throws IOException, SQLException {
+    assertStreamResultEqualsStringResult(null);
+    assertStreamResultEqualsStringResult("1");
+    assertStreamResultEqualsStringResult("111");
+    assertStreamResultEqualsStringResult(RANDOM_STR);
+    assertStreamResultEqualsStringResult(RANDOM_STR + ']' + RANDOM_STR);
+    assertStreamResultEqualsStringResult(RANDOM_STR + ']');
+  }
+
+  private void assertStreamResultEqualsStringResult(String string) throws SQLException, IOException {
+    final ResultSet resultSet = resultSet(string);
+    final StringBuilderWriter writer = new StringBuilderWriter();
+    FORMATTER.format(writer, resultSet, 1);
+    assertEquals(writer.toString(), FORMATTER.format(resultSet, 1));
   }
 
   @Test
