@@ -259,6 +259,54 @@ public class ExportService {
     return clobToBlobFnName;
   }
 
+  /**
+   * export tables to writer
+   *
+   * @param writer        writer to write sql script
+   * @param tables        table names -> sql select statements
+   * @param excludeTables exclude tables, should be same case with tables
+   * @return clob to blob helper function name, null if not needed
+   * @throws IOException writer IO fail
+   */
+  public String exportTables(
+      final Writer writer,
+      final Map<String, String> tables,
+      final Set<String> excludeTables) throws IOException {
+    final int size = tables.size();
+    int i = 0;
+    String clobToBlobFnName = null;
+    for (final Map.Entry<String, String> entry : tables.entrySet()) {
+      i++;
+      final String table = entry.getKey();
+      if (excludeTables.contains(table)) {
+        log.info("[{}/{}] Skip exporting table {} ...", i, size, table);
+        continue;
+      }
+      final String sql = entry.getValue();
+      log.info("[{}/{}] Exporting table {} ...", i + 1, size, table);
+      writer.write("-- ------------------------------------------------------------\n");
+      writer.write("--            ");
+      writer.write(table);
+      writer.write("\n-- ------------------------------------------------------------\n");
+      try {
+        final String nextClobToBlobFnName =
+            sql == null ?
+                exportTable(writer, table, clobToBlobFnName) :
+                exportTable(writer, table, sql, clobToBlobFnName);
+        if (clobToBlobFnName == null && nextClobToBlobFnName != null) {
+          clobToBlobFnName = nextClobToBlobFnName;
+        }
+        log.info("[{}/{}] Export table {} complete.", i + 1, size, table);
+      } catch (RuntimeException e) {
+        writer.write("--  Export ");
+        writer.write(table);
+        writer.write(" failed.");
+        log.error("[{}/{}] Export table {} fail.", i + 1, size, table, e);
+      }
+    }
+    return clobToBlobFnName;
+  }
+
   public static class IoExceptionWrapper extends NestedRuntimeException {
 
     private static final long serialVersionUID = 8768051255727525629L;

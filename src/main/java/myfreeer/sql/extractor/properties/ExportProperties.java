@@ -8,10 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.ZoneId;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Data
@@ -36,6 +33,11 @@ public class ExportProperties {
    * Tables to exclude, effective if type is table or full
    */
   private Set<String> excludeTables = Collections.emptySet();
+
+  /**
+   * Sql select statements for exporting, effective if type is sql
+   */
+  private LinkedHashMap<String, String> sql = new LinkedHashMap<>();
 
   /**
    * Time zone for {@link DateFormatter} and {@link TimestampFormatter}
@@ -67,6 +69,10 @@ public class ExportProperties {
     /**
      * Export all tables in current schema, excluding {@code excludeTables}
      */
-    FULL
+    FULL,
+    /**
+     * Export tables via custom sql select statement
+     */
+    SQL
   }
 }

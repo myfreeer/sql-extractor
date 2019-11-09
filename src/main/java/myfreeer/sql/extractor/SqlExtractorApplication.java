@@ -48,13 +48,25 @@ public class SqlExtractorApplication {
       tempFile = Files.createTempFile("sql_extract_temp_", ".sql");
       String clobToBlobFnName;
       try (final BufferedWriter writer = Files.newBufferedWriter(tempFile, UTF_8)) {
-        if (exportProperties.getType() == ExportProperties.ExportType.TABLE) {
-          clobToBlobFnName = exportService.exportTables(writer,
-              exportProperties.lowerCaseTables(),
-              exportProperties.lowerCaseExcludeTables());
-        } else {
-          clobToBlobFnName = exportService.exportAllTables(writer,
-              exportProperties.lowerCaseExcludeTables());
+        switch (exportProperties.getType()) {
+          case TABLE:
+            clobToBlobFnName = exportService.exportTables(writer,
+                exportProperties.lowerCaseTables(),
+                exportProperties.lowerCaseExcludeTables());
+            break;
+          case SQL:
+            clobToBlobFnName = exportService.exportTables(writer,
+                exportProperties.getSql(),
+                exportProperties.lowerCaseExcludeTables());
+            break;
+          case FULL:
+            clobToBlobFnName = exportService.exportAllTables(writer,
+                exportProperties.lowerCaseExcludeTables());
+            break;
+          default:
+            // should not reach here
+            clobToBlobFnName = null;
+            break;
         }
         writer.flush();
       }
