@@ -47,44 +47,44 @@
         </dependency>
     </dependencies>
     <dependencyManagement>
-            <dependencies>
-                <dependency>
-                    <groupId>com.oracle.ojdbc</groupId>
-                    <artifactId>ojdbc8</artifactId>
-                    <exclusions>
-                        <!-- Java Connection Pool (UCP) required to pool database connections -->
-                        <!-- Using HikariCP instead -->
-                        <exclusion>
-                            <groupId>com.oracle.ojdbc</groupId>
-                            <artifactId>ucp</artifactId>
-                        </exclusion>
-                        <!-- Additional libraries required to support Oracle Wallets and/or
-                        the Notification System  -->
-                        <exclusion>
-                            <groupId>com.oracle.ojdbc</groupId>
-                            <artifactId>oraclepki</artifactId>
-                        </exclusion>
-                        <exclusion>
-                            <groupId>com.oracle.ojdbc</groupId>
-                            <artifactId>osdt_cert</artifactId>
-                        </exclusion>
-                        <exclusion>
-                            <groupId>com.oracle.ojdbc</groupId>
-                            <artifactId>osdt_core</artifactId>
-                        </exclusion>
-                        <!-- Additional libraries required to support FAN events with UCP and/or
-                         the JDBC driver -->
-                        <exclusion>
-                            <groupId>com.oracle.ojdbc</groupId>
-                            <artifactId>simplefan</artifactId>
-                        </exclusion>
-                        <exclusion>
-                            <groupId>com.oracle.ojdbc</groupId>
-                            <artifactId>ons</artifactId>
-                        </exclusion>
-                    </exclusions>
-                </dependency>
-            </dependencies>
+        <dependencies>
+            <dependency>
+                <groupId>com.oracle.ojdbc</groupId>
+                <artifactId>ojdbc8</artifactId>
+                <exclusions>
+                    <!-- Java Connection Pool (UCP) required to pool database connections -->
+                    <!-- Using HikariCP instead -->
+                    <exclusion>
+                        <groupId>com.oracle.ojdbc</groupId>
+                        <artifactId>ucp</artifactId>
+                    </exclusion>
+                    <!-- Additional libraries required to support Oracle Wallets and/or
+                    the Notification System  -->
+                    <exclusion>
+                        <groupId>com.oracle.ojdbc</groupId>
+                        <artifactId>oraclepki</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.oracle.ojdbc</groupId>
+                        <artifactId>osdt_cert</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.oracle.ojdbc</groupId>
+                        <artifactId>osdt_core</artifactId>
+                    </exclusion>
+                    <!-- Additional libraries required to support FAN events with UCP and/or
+                     the JDBC driver -->
+                    <exclusion>
+                        <groupId>com.oracle.ojdbc</groupId>
+                        <artifactId>simplefan</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.oracle.ojdbc</groupId>
+                        <artifactId>ons</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+        </dependencies>
     </dependencyManagement>
     <build>
         <plugins>
