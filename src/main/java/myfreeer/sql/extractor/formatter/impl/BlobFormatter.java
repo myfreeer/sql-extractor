@@ -15,7 +15,11 @@ import java.sql.*;
 @Getter
 @Slf4j
 public class BlobFormatter implements StreamingFormatter<InputStream> {
-  private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+  /**
+   * Shared for package-private read-only access,
+   * NEVER change this at runtime
+   */
+  static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
   private final String fnName;
 
   @Override

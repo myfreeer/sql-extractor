@@ -10,9 +10,10 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Arrays;
 
+import static myfreeer.sql.extractor.formatter.impl.BlobFormatter.HEX_ARRAY;
+
 @Component
 public class RawFormatter implements StreamingFormatter<byte[]> {
-  private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
   private static final char[] FUNC = "HEXTORAW('".toCharArray();
 
   @Override
