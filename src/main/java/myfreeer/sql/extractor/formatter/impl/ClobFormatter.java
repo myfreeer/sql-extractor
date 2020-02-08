@@ -8,10 +8,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
-import java.sql.Clob;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.sql.*;
 
 @Slf4j
 @Component
@@ -36,8 +33,7 @@ public class ClobFormatter implements StreamingFormatter<Clob> {
     try {
       format(writer, clob);
     } catch (IOException e) {
-      log.error("Read clob fail", e);
-      return "null";
+      throw new SQLRecoverableException("Read clob fail", e);
     }
     return writer.toString();
   }
