@@ -9,10 +9,7 @@ import myfreeer.sql.extractor.util.StringBuilderWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
-import java.sql.Blob;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.sql.*;
 
 @RequiredArgsConstructor
 @Getter
@@ -37,7 +34,7 @@ public class BlobFormatter implements StreamingFormatter<InputStream> {
     try {
       format(writer, blob);
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new SQLRecoverableException("Read blob fail", e);
     }
     return writer.toString();
   }
