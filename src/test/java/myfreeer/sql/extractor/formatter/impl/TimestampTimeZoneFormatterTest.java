@@ -5,42 +5,49 @@ import org.mockito.Mockito;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.sql.Types;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.zone.ZoneRulesProvider;
 import java.util.Date;
-import java.util.TimeZone;
 
 import static org.junit.Assert.assertEquals;
 
 public class TimestampTimeZoneFormatterTest extends TimestampFormatterTest {
   private final TimestampTimeZoneFormatter formatter = new TimestampTimeZoneFormatter(properties);
+  private final ZoneId defaultZone = ZoneId.systemDefault();
 
-  protected ResultSet resultSet(final Date data, final String string) throws SQLException {
-    final ResultSet resultSet = Mockito.mock(ResultSet.class);
-    Mockito.when(resultSet.next()).thenReturn(true).thenReturn(false);
-    Mockito.when(resultSet.getString(Mockito.anyInt()))
-        .thenReturn(string).thenReturn(string);
+  protected ResultSet resultSet(final Date data) throws SQLException {
     if (data == null) {
-      Mockito.when(resultSet.getDate(Mockito.anyInt()))
-          .thenReturn(null).thenReturn(null);
-      Mockito.when(resultSet.getTimestamp(Mockito.anyInt()))
-          .thenReturn(null).thenReturn(null);
-    } else {
-      final java.sql.Date date = new java.sql.Date(data.getTime());
-      final Timestamp timestamp = new Timestamp(data.getTime());
-      Mockito.when(resultSet.getDate(Mockito.anyInt()))
-          .thenReturn(date).thenReturn(date);
-      Mockito.when(resultSet.getTimestamp(Mockito.anyInt()))
-          .thenReturn(timestamp).thenReturn(timestamp);
+      return resultSet((OffsetDateTime) null);
     }
+    final Instant instant = data.toInstant();
+    return resultSet(instant.atOffset(defaultZone.getRules().getOffset(instant)));
+  }
+
+  protected ResultSet fallbackResultSet(final Date data) throws SQLException {
+    final ResultSet resultSet = super.resultSet(data);
+    Mockito.when(resultSet.getObject(Mockito.anyInt(), Mockito.eq(OffsetDateTime.class)))
+            .thenThrow(SQLException.class).thenThrow(SQLException.class);
     return resultSet;
   }
 
-  private SimpleDateFormat sdf(final String pattern) {
-    final SimpleDateFormat sdf = new SimpleDateFormat(pattern, formatter().locale());
-    sdf.setTimeZone(TimeZone.getTimeZone(formatter().zone()));
-    return sdf;
+  @SuppressWarnings("unchecked")
+  protected ResultSet resultSet(final OffsetDateTime offsetDateTime) throws SQLException {
+    final ResultSet resultSet;
+    if (offsetDateTime == null) {
+      resultSet = super.resultSet(null);
+      Mockito.when(resultSet.getObject(Mockito.anyInt(), Mockito.any(Class.class)))
+              .thenReturn(null).thenReturn(null);
+    } else {
+      final Date date = Date.from(offsetDateTime.toInstant());
+      resultSet = super.resultSet(date);
+      Mockito.when(resultSet.getObject(Mockito.anyInt(), Mockito.eq(OffsetDateTime.class)))
+              .thenReturn(offsetDateTime).thenReturn(offsetDateTime);
+    }
+    return resultSet;
   }
 
   @Override
@@ -53,42 +60,50 @@ public class TimestampTimeZoneFormatterTest extends TimestampFormatterTest {
     assertEquals(formatter().type(), Types.TIMESTAMP_WITH_TIMEZONE);
   }
 
-  private String repeat(final int count) {
-    final char[] chars = new char[count];
-    for (int i = 0; i < count; i++) {
-      chars[i] = 'S';
-    }
-    return new String(chars);
-  }
-
-  private void assertValidValue(final int f, final String timeZone) throws SQLException {
-    final Date now = new Date();
-    final String s = sdf("yyyy-MM-dd HH:mm:ss." + repeat(f)).format(now) + " " + timeZone;
-    assertEquals(formatter().format(resultSet(now, s), 1), "TO_TIMESTAMP_TZ('" +
-        s +
-        "', 'YYYY-MM-DD HH24-MI-SS.FF" +
-        f +
-        " TZH:TZM')");
+  @Override
+  public void nullValue() throws SQLException {
+    assertEquals("null", formatter().format(resultSet((OffsetDateTime) null), 1));
   }
 
   @Override
-  public void nullValue() throws SQLException {
-    assertEquals("null", formatter().format(resultSet(null), 1));
+  public void formatResultSet() throws SQLException {
+    final OffsetDateTime now = OffsetDateTime.now(defaultZone);
+    assertEquals(formatter.format(now), formatter.format(resultSet(now), 1));
   }
 
   @Test
-  public void formatValidValue() throws SQLException {
-    for (int i = 3; i < 10; i++) {
-      assertValidValue(i, "+05:00");
-      assertValidValue(i, "-10:00");
-      assertValidValue(i, "00:00");
+  public void formatConstant() throws SQLException {
+    OffsetDateTime offsetDateTime = OffsetDateTime.of(2012,12,21,
+            12,34,56, 778899000,
+            ZoneOffset.ofHoursMinutes(7, 5));
+    assertEquals("TO_TIMESTAMP_TZ('2012-12-21 12:34:56.778899 +07:05', 'YYYY-MM-DD HH24-MI-SS.FF6 TZH:TZM')",
+            formatter.format(resultSet(offsetDateTime), 1));
+    offsetDateTime = OffsetDateTime.of(2012, 12, 21,
+            12, 34, 56, 778899000,
+            ZoneOffset.ofHoursMinutes(-11, -25));
+    assertEquals("TO_TIMESTAMP_TZ('2012-12-21 12:34:56.778899 -11:25', 'YYYY-MM-DD HH24-MI-SS.FF6 TZH:TZM')",
+            formatter.format(resultSet(offsetDateTime), 1));
+    offsetDateTime = OffsetDateTime.of(2012, 12, 21,
+            12, 34, 56, 778899000,
+            ZoneOffset.ofHoursMinutes(0, 0));
+    assertEquals("TO_TIMESTAMP_TZ('2012-12-21 12:34:56.778899 +00:00', 'YYYY-MM-DD HH24-MI-SS.FF6 TZH:TZM')",
+            formatter.format(resultSet(offsetDateTime), 1));
+  }
+
+  @Test
+  public void formatResultSetAtZone() throws SQLException {
+    ZoneId zoneId;
+    OffsetDateTime now;
+    for (String s : ZoneRulesProvider.getAvailableZoneIds()) {
+      zoneId = ZoneId.of(s);
+      now = OffsetDateTime.now(zoneId);
+      assertEquals(formatter.format(now), formatter.format(resultSet(now), 1));
     }
   }
 
   @Test
-  public void formatInvalidValue() throws SQLException {
-    final Date now = new Date();
-    final String s = sdf("yyyy-MM-dd HH:mm:ss").format(now) + " 00:00";
-    assertEquals(formatter().format(resultSet(now, s), 1), formatter().format(now));
+  public void fallbackFormat() throws SQLException {
+    final ResultSet fallback = fallbackResultSet(new Date());
+    assertEquals(formatter.format(fallback, 1), super.formatter().format(fallback, 1));
   }
 }

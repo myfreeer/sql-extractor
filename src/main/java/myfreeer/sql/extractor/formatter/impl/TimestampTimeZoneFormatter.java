@@ -4,23 +4,23 @@ import lombok.extern.slf4j.Slf4j;
 import myfreeer.sql.extractor.properties.ExportProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Component
 @Slf4j
 public class TimestampTimeZoneFormatter extends TimestampFormatter {
-  private static final Pattern PATTERN = Pattern.compile(
-      "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.(\\d+) [+\\-]?\\d{1,2}:\\d{2}");
+  private final DateTimeFormatter timestampFormatter;
 
   @Autowired
   public TimestampTimeZoneFormatter(final ExportProperties properties) {
     super(properties);
+    timestampFormatter = DateTimeFormatter.ofPattern(
+            "yyyy-MM-dd HH:mm:ss.SSSSSS xxx", locale());
   }
 
   @Override
@@ -30,27 +30,22 @@ public class TimestampTimeZoneFormatter extends TimestampFormatter {
 
   @Override
   public String format(final ResultSet resultSet, final int col) throws SQLException {
-    final String timestamp = resultSet.getString(col);
-    if (timestamp == null) {
+    try {
+      final OffsetDateTime offsetDateTime = resultSet.getObject(col, OffsetDateTime.class);
+      if (offsetDateTime == null) {
+        return "null";
+      }
+      return format(offsetDateTime);
+    } catch (SQLException ex) {
+      log.warn("Fail to get OffsetDateTime from col {}, falling back with timestamp", col, ex);
       return super.format(resultSet, col);
     }
-    final Matcher matcher = PATTERN.matcher(timestamp);
-    if (!matcher.matches()) {
-      log.warn("Fail to detect format for timestamp with timezone [{}]," +
-          " formatting as normal timestamp...", timestamp);
-      return super.format(resultSet, col);
-    }
-    final String group = matcher.group(1);
-    if (StringUtils.isEmpty(group)) {
-      log.warn("Fail to detect format for timestamp with timezone [{}]," +
-          " formatting as normal timestamp...", timestamp);
-      return super.format(resultSet, col);
-    }
+  }
+
+  String format(final OffsetDateTime offsetDateTime) {
     return "TO_TIMESTAMP_TZ('" +
-        timestamp +
-        "', 'YYYY-MM-DD HH24-MI-SS.FF" +
-        group.length() +
-        " TZH:TZM')";
+            timestampFormatter.format(offsetDateTime) +
+            "', 'YYYY-MM-DD HH24-MI-SS.FF6 TZH:TZM')";
   }
 
 }
