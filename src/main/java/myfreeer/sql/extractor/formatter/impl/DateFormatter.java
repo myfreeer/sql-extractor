@@ -65,7 +65,9 @@ public class DateFormatter implements Formatter<Date> {
 
   protected String format(final Date date) {
     return conventFn() + "('" +
-        formatter.format(Instant.ofEpochMilli(date.getTime())) +
+        formatter.format(date instanceof java.sql.Date || date instanceof java.sql.Time ?
+                Instant.ofEpochMilli(date.getTime()) :
+                date.toInstant()) +
         "','" + oraclePattern() + "')";
   }
 }
