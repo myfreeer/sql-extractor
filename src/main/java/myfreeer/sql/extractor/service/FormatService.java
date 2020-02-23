@@ -37,9 +37,9 @@ public class FormatService {
     alternatives.put(Types.FLOAT, Types.NUMERIC);
     alternatives.put(Types.DOUBLE, Types.NUMERIC);
     alternatives.put(Types.CHAR, Types.VARCHAR);
-    alternatives.put(Types.NCHAR, Types.VARCHAR);
+    alternatives.put(Types.NCHAR, Types.NVARCHAR);
     alternatives.put(Types.NVARCHAR, Types.VARCHAR);
-    alternatives.put(Types.LONGNVARCHAR, Types.VARCHAR);
+    alternatives.put(Types.LONGNVARCHAR, Types.NVARCHAR);
     alternatives.put(Types.LONGVARCHAR, Types.VARCHAR);
     alternatives.put(Types.ROWID, Types.VARCHAR);
     alternatives.put(Types.REAL, Types.NUMERIC);

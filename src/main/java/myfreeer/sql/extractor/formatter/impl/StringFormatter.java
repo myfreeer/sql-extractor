@@ -16,6 +16,22 @@ public class StringFormatter implements StreamingFormatter<String> {
     return Types.VARCHAR;
   }
 
+  protected String prefix() {
+    return "(q'[";
+  }
+
+  protected String escapingDelimiter() {
+    return "]' || ']' || q'[";
+  }
+
+  protected String suffix() {
+    return "]')";
+  }
+
+  protected String escapingSuffix() {
+    return "]' || ']')";
+  }
+
   @Override
   public String format(final ResultSet resultSet, final int col) throws SQLException {
     final String string = resultSet.getString(col);
@@ -24,20 +40,20 @@ public class StringFormatter implements StreamingFormatter<String> {
     }
     final int length = string.length();
     final StringBuilder sb = new StringBuilder(length + 10);
-    sb.append("(q'[");
+    sb.append(prefix());
     char c;
     for (int i = 0; i < length; i++) {
       if ((c = string.charAt(i)) == ']') {
         if (i == length - 1) {
-          sb.append("]' || ']')");
+          sb.append(escapingSuffix());
           return sb.toString();
         }
-        sb.append("]' || ']' || q'[");
+        sb.append(escapingDelimiter());
         continue;
       }
       sb.append(c);
     }
-    sb.append("]')");
+    sb.append(suffix());
     return sb.toString();
   }
 
@@ -51,19 +67,19 @@ public class StringFormatter implements StreamingFormatter<String> {
       return;
     }
     final int length = string.length();
-    writer.write("(q'[");
+    writer.write(prefix());
     char c;
     for (int i = 0; i < length; i++) {
       if ((c = string.charAt(i)) == ']') {
         if (i == length - 1) {
-          writer.write("]' || ']')");
+          writer.write(escapingSuffix());
           return;
         }
-        writer.write("]' || ']' || q'[");
+        writer.write(escapingDelimiter());
         continue;
       }
       writer.write(c);
     }
-    writer.write("]')");
+    writer.write(suffix());
   }
 }

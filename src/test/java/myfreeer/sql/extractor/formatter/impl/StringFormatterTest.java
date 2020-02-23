@@ -26,7 +26,11 @@ public class StringFormatterTest {
     RANDOM_STR = Base64.getEncoder().encodeToString(bytes);
   }
 
-  private ResultSet resultSet(final String data) throws SQLException {
+  protected static String getRandomStr() {
+    return RANDOM_STR;
+  }
+
+  protected ResultSet resultSet(final String data) throws SQLException {
     final ResultSet resultSet = Mockito.mock(ResultSet.class);
     Mockito.when(resultSet.next()).thenReturn(true).thenReturn(false);
     if (data == null) {
@@ -52,35 +56,59 @@ public class StringFormatterTest {
   private void assertStreamResultEqualsStringResult(String string) throws SQLException, IOException {
     final ResultSet resultSet = resultSet(string);
     final StringBuilderWriter writer = new StringBuilderWriter();
-    FORMATTER.format(writer, resultSet, 1);
-    assertEquals(writer.toString(), FORMATTER.format(resultSet, 1));
+    getFormatter().format(writer, resultSet, 1);
+    assertEquals(writer.toString(), getFormatter().format(resultSet, 1));
   }
 
   @Test
   public void type() {
-    assertEquals(FORMATTER.type(), Types.VARCHAR);
+    assertEquals(Types.VARCHAR, getFormatter().type());
   }
 
   @Test
   public void nullValue() throws SQLException {
-    assertEquals("null", FORMATTER.format(resultSet(null), 1));
+    assertEquals("null", getFormatter().format(resultSet(null), 1));
   }
 
   @Test
   public void simpleString() throws SQLException {
     assertEquals("(q'[" + RANDOM_STR + "]')",
-        FORMATTER.format(resultSet(RANDOM_STR), 1));
+        getFormatter().format(resultSet(RANDOM_STR), 1));
   }
 
   @Test
   public void escapingString() throws SQLException {
     assertEquals("(q'[" + RANDOM_STR + "]' || ']' || q'[" + RANDOM_STR + "]')",
-        FORMATTER.format(resultSet(RANDOM_STR + ']' + RANDOM_STR), 1));
+            getFormatter().format(resultSet(RANDOM_STR + ']' + RANDOM_STR), 1));
   }
 
   @Test
   public void escapingStringAtEnd() throws SQLException {
     assertEquals("(q'[" + RANDOM_STR + "]' || ']')",
-        FORMATTER.format(resultSet(RANDOM_STR + ']'), 1));
+            getFormatter().format(resultSet(RANDOM_STR + ']'), 1));
+  }
+
+  @Test
+  public void prefix() {
+    assertEquals("(q'[", getFormatter().prefix());
+  }
+
+  protected StringFormatter getFormatter() {
+    return FORMATTER;
+  }
+
+  @Test
+  public void escapingDelimiter() {
+    assertEquals("]' || ']' || q'[", getFormatter().escapingDelimiter());
+  }
+
+  @Test
+  public void suffix() {
+    assertEquals("]')", getFormatter().suffix());
+  }
+
+  @Test
+  public void escapingSuffix() {
+    assertEquals("]' || ']')", getFormatter().escapingSuffix());
   }
 }
