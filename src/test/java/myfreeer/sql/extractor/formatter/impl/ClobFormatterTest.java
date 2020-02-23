@@ -18,8 +18,6 @@ import static org.junit.Assert.assertEquals;
 
 public class ClobFormatterTest {
 
-  private static final Random RANDOM = ThreadLocalRandom.current();
-
   private final ClobFormatter formatter = new ClobFormatter();
 
   protected ClobFormatter formatter() {
@@ -48,8 +46,9 @@ public class ClobFormatterTest {
   }
 
   private String randomStr(final int size) {
-    final byte[] bytes = new byte[RANDOM.nextInt(size) + size];
-    RANDOM.nextBytes(bytes);
+    final Random random = ThreadLocalRandom.current();
+    final byte[] bytes = new byte[random.nextInt(size) + size];
+    random.nextBytes(bytes);
     return Base64.getEncoder().encodeToString(bytes);
   }
 

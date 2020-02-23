@@ -19,11 +19,11 @@ import static org.junit.Assert.assertEquals;
 public class BlobFormatterTest {
   private static final byte[] TEST_DATA1 = new byte[256];
   private static final byte[] TEST_DATA2 = new byte[1234];
-  private static final Random RANDOM = ThreadLocalRandom.current();
 
   static {
-    RANDOM.nextBytes(TEST_DATA1);
-    RANDOM.nextBytes(TEST_DATA2);
+    final Random random = ThreadLocalRandom.current();
+    random.nextBytes(TEST_DATA1);
+    random.nextBytes(TEST_DATA2);
   }
 
   private ResultSet resultSet(final byte[] data) throws SQLException {
@@ -59,21 +59,21 @@ public class BlobFormatterTest {
 
   @Test
   public void type() {
-    final String s = Long.toHexString(RANDOM.nextLong());
+    final String s = Long.toHexString(ThreadLocalRandom.current().nextLong());
     final BlobFormatter blobFormatter = new BlobFormatter(s);
     assertEquals(blobFormatter.type(), Types.BLOB);
   }
 
   @Test
   public void fnName() {
-    final String s = Long.toHexString(RANDOM.nextLong());
+    final String s = Long.toHexString(ThreadLocalRandom.current().nextLong());
     final BlobFormatter blobFormatter = new BlobFormatter(s);
     assertEquals(blobFormatter.getFnName(), s);
   }
 
   private void assertStreamResultEqualsStringResult(ResultSet resultSet) throws SQLException, IOException {
     final StringBuilderWriter writer = new StringBuilderWriter();
-    final String s = Long.toHexString(RANDOM.nextLong());
+    final String s = Long.toHexString(ThreadLocalRandom.current().nextLong());
     final BlobFormatter blobFormatter = new BlobFormatter(s);
     blobFormatter.format(writer, resultSet, 1);
     assertEquals(writer.toString(), blobFormatter.format(resultSet, 1));
@@ -101,7 +101,7 @@ public class BlobFormatterTest {
   @Test
   public void shortString() throws SQLException {
     final ResultSet resultSet = resultSet(TEST_DATA1);
-    final String s = Long.toHexString(RANDOM.nextLong());
+    final String s = Long.toHexString(ThreadLocalRandom.current().nextLong());
     final BlobFormatter blobFormatter = new BlobFormatter(s);
     assertEquals(s + "(TO_CLOB('" + toHex(TEST_DATA1, 0, -1) + "'))",
         blobFormatter.format(resultSet, 1));
@@ -110,7 +110,7 @@ public class BlobFormatterTest {
   @Test
   public void longString() throws SQLException {
     final ResultSet resultSet = resultSet(TEST_DATA2);
-    final String s = Long.toHexString(RANDOM.nextLong());
+    final String s = Long.toHexString(ThreadLocalRandom.current().nextLong());
     final BlobFormatter blobFormatter = new BlobFormatter(s);
     assertEquals(s + "(TO_CLOB('" +
         toHex(TEST_DATA2, 0, 512) +
@@ -124,7 +124,7 @@ public class BlobFormatterTest {
   @Test
   public void nullValue() throws SQLException {
     final ResultSet resultSet = resultSet(null);
-    final String s = Long.toHexString(RANDOM.nextLong());
+    final String s = Long.toHexString(ThreadLocalRandom.current().nextLong());
     final BlobFormatter blobFormatter = new BlobFormatter(s);
     assertEquals("null", blobFormatter.format(resultSet, 1));
   }

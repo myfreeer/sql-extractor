@@ -8,13 +8,11 @@ import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.Assert.assertEquals;
 
 public class NumberFormatterTest {
-  private static final Random RANDOM = ThreadLocalRandom.current();
 
   private static final NumberFormatter FORMATTER = new NumberFormatter();
 
@@ -55,33 +53,33 @@ public class NumberFormatterTest {
 
   @Test
   public void intValue() throws SQLException {
-    final int i = RANDOM.nextInt();
+    final int i = ThreadLocalRandom.current().nextInt();
     assertEquals(Integer.toString(i), FORMATTER.format(resultSet(i), 1));
   }
 
   @Test
   public void longValue() throws SQLException {
-    final long i = RANDOM.nextLong();
+    final long i = ThreadLocalRandom.current().nextLong();
     assertEquals(Long.toString(i), FORMATTER.format(resultSet(i), 1));
   }
 
   @Test
   public void doubleValue() throws SQLException {
-    final double i = RANDOM.nextDouble();
+    final double i = ThreadLocalRandom.current().nextDouble();
     assertEquals(Double.toString(i), FORMATTER.format(resultSet(i), 1));
   }
 
   @Test
   public void bigIntegerValue() throws SQLException {
-    final BigInteger i = BigInteger.valueOf(RANDOM.nextLong())
-        .multiply(BigInteger.valueOf(RANDOM.nextLong()));
+    final BigInteger i = BigInteger.valueOf(ThreadLocalRandom.current().nextLong())
+        .multiply(BigInteger.valueOf(ThreadLocalRandom.current().nextLong()));
     assertEquals(i.toString(), FORMATTER.format(resultSet(i), 1));
   }
 
   @Test
   public void bigDecimalValue() throws SQLException {
-    final BigDecimal i = BigDecimal.valueOf(RANDOM.nextDouble())
-        .multiply(BigDecimal.valueOf(RANDOM.nextDouble()));
+    final BigDecimal i = BigDecimal.valueOf(ThreadLocalRandom.current().nextDouble())
+        .multiply(BigDecimal.valueOf(ThreadLocalRandom.current().nextDouble()));
     assertEquals(i.toString(), FORMATTER.format(resultSet(i), 1));
   }
 }

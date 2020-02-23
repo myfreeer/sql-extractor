@@ -8,14 +8,12 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static myfreeer.sql.extractor.formatter.impl.BlobFormatterTest.toHex;
 import static org.junit.Assert.assertEquals;
 
 public class RawFormatterTest {
-  private static final Random RANDOM = ThreadLocalRandom.current();
   private static final RawFormatter FORMATTER = new RawFormatter();
 
   private ResultSet resultSet(final byte[] data) throws SQLException {
@@ -33,7 +31,7 @@ public class RawFormatterTest {
 
   private void assertStreamResultEqualsStringResult(int length) throws SQLException, IOException {
     byte[] bytes = new byte[length];
-    RANDOM.nextBytes(bytes);
+    ThreadLocalRandom.current().nextBytes(bytes);
     final ResultSet resultSet = resultSet(bytes);
     final StringBuilderWriter writer = new StringBuilderWriter();
     FORMATTER.format(writer, resultSet, 1);
@@ -59,8 +57,8 @@ public class RawFormatterTest {
   @Test
   public void format() throws SQLException {
     for (int i = 0; i < 10; i++) {
-      byte[] bytes = new byte[Math.abs(RANDOM.nextInt() % 1000) + 1000];
-      RANDOM.nextBytes(bytes);
+      byte[] bytes = new byte[Math.abs(ThreadLocalRandom.current().nextInt() % 1000) + 1000];
+      ThreadLocalRandom.current().nextBytes(bytes);
       assertEquals("HEXTORAW('" + toHex(bytes, 0, bytes.length) + "')",
           FORMATTER.format(resultSet(bytes), 1));
     }
