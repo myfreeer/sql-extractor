@@ -17,7 +17,6 @@ package myfreeer.sql.extractor.util;
  */
 
 import java.io.Serializable;
-import java.io.StringWriter;
 import java.io.Writer;
 
 /**
@@ -61,16 +60,6 @@ public class StringBuilderWriter extends Writer implements Serializable {
    */
   public StringBuilderWriter(final StringBuilder builder) {
     this.builder = builder != null ? builder : new StringBuilder();
-  }
-
-  public static void ensureCapacity(Writer writer, int extraLength) {
-    if (writer instanceof StringWriter) {
-      final StringBuffer buffer = ((StringWriter) writer).getBuffer();
-      buffer.ensureCapacity(buffer.length() + extraLength);
-    } else if (writer instanceof StringBuilderWriter) {
-      final StringBuilder builder = ((StringBuilderWriter) writer).getBuilder();
-      builder.ensureCapacity(builder.length() + extraLength);
-    }
   }
 
   /**
