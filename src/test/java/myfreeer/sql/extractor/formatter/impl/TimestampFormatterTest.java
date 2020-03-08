@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Date;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TimestampFormatterTest extends DateFormatterTest {
   private final TimestampFormatter formatter = new TimestampFormatter(properties);

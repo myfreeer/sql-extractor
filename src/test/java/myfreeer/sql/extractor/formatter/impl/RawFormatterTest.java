@@ -1,7 +1,7 @@
 package myfreeer.sql.extractor.formatter.impl;
 
 import myfreeer.sql.extractor.util.StringBuilderWriter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.io.IOException;
@@ -11,7 +11,7 @@ import java.sql.Types;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static myfreeer.sql.extractor.formatter.impl.BlobFormatterTest.toHex;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RawFormatterTest {
   private static final RawFormatter FORMATTER = new RawFormatter();

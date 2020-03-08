@@ -1,7 +1,7 @@
 package myfreeer.sql.extractor.formatter.impl;
 
 import myfreeer.sql.extractor.properties.ExportProperties;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.sql.ResultSet;
@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DateFormatterTest {
   protected ExportProperties properties = new ExportProperties()

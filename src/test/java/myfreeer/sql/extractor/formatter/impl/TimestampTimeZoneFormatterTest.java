@@ -1,6 +1,6 @@
 package myfreeer.sql.extractor.formatter.impl;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.sql.ResultSet;
@@ -13,7 +13,7 @@ import java.time.ZoneOffset;
 import java.time.zone.ZoneRulesProvider;
 import java.util.Date;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TimestampTimeZoneFormatterTest extends TimestampFormatterTest {
   private final TimestampTimeZoneFormatter formatter = new TimestampTimeZoneFormatter(properties);

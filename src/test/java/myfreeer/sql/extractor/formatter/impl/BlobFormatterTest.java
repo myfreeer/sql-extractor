@@ -1,7 +1,7 @@
 package myfreeer.sql.extractor.formatter.impl;
 
 import myfreeer.sql.extractor.util.StringBuilderWriter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.io.ByteArrayInputStream;
@@ -14,7 +14,7 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static myfreeer.sql.extractor.formatter.impl.BlobFormatter.HEX_ARRAY;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BlobFormatterTest {
   private static final byte[] TEST_DATA1 = new byte[256];

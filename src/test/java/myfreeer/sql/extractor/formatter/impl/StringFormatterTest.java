@@ -1,7 +1,7 @@
 package myfreeer.sql.extractor.formatter.impl;
 
 import myfreeer.sql.extractor.util.StringBuilderWriter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.io.IOException;
@@ -12,7 +12,7 @@ import java.util.Base64;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class StringFormatterTest {
 
