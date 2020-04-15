@@ -43,12 +43,17 @@ public class NClobFormatterTest extends ClobFormatterTest {
 
   @Test
   public void type() {
-    assertEquals(formatter().type(), Types.NCLOB);
+    assertEquals(Types.NCLOB, formatter().type());
   }
 
   @Test
   public void toClobFn() {
-    assertEquals(formatter().toClobFn(), "TO_NCLOB");
+    assertEquals("TO_NCLOB", formatter().toClobFn());
+  }
+
+  @Test
+  public void stringPrefix() {
+    assertEquals("(nq'[", formatter().stringPrefix());
   }
 
 }

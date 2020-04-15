@@ -45,24 +45,28 @@ public class ClobFormatter implements StreamingFormatter<Clob> {
   protected void format(final Writer writer, final Clob clob)
       throws SQLException, IOException {
     final Reader r = clob.getCharacterStream();
-    writer.append(toClobFn()).append("(q'[");
+    writer.append(toClobFn()).append(stringPrefix());
     int b, lastLen = 0;
     while (-1 != (b = r.read())) {
       if (b == ']') {
         lastLen = 0;
         writer.append("]')\n || ")
             .append(toClobFn()).append("(']') || ")
-            .append(toClobFn()).append("(q'[");
+            .append(toClobFn()).append(stringPrefix());
         continue;
       }
       if (++lastLen == 2000) {
-        writer.append("]')\n || ").append(toClobFn()).append("(q'[");
+        writer.append("]')\n || ").append(toClobFn()).append(stringPrefix());
         lastLen = 0;
       }
       writer.append((char) b);
     }
     writer.append("]')");
 
+  }
+
+  protected String stringPrefix() {
+    return "(q'[";
   }
 
   @Override

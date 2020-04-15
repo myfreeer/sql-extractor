@@ -5,6 +5,7 @@ import lombok.experimental.Accessors;
 import myfreeer.sql.extractor.formatter.impl.DateFormatter;
 import myfreeer.sql.extractor.formatter.impl.TimestampFormatter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.ZoneId;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 @Accessors(chain = true)
 @Configuration
 @ConfigurationProperties("export")
+@EnableConfigurationProperties
 public class ExportProperties {
   /**
    * Export type

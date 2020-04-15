@@ -37,6 +37,11 @@ public class NClobFormatter extends ClobFormatter {
   }
 
   @Override
+  protected String stringPrefix() {
+    return "(nq'[";
+  }
+
+  @Override
   protected String toClobFn() {
     return "TO_NCLOB";
   }
