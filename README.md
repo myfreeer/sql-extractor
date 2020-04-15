@@ -32,12 +32,16 @@ export:
   # Export type
   # full: export all tables in current schema, excluding exclude-tables
   # table: export specified tables in tables, excluding exclude-tables
+  # sql: export tables via custom sql select statement
   type: full
-  # Tables to export, effective if type is table
+  # Tables to exclude, effective if type is table or full
   exclude-tables:
     - exclude_table_1
-  # Tables to exclude, effective if type is table or full
+  # Tables to export, effective if type is table
   tables:
     - include_table_1
+  # Sql select statements for exporting, effective if type is sql
+  sql:
+    table_name_1: select * from dual where rownum = 1
 
 ```

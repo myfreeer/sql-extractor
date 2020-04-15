@@ -39,7 +39,7 @@ public class ExportProperties {
   /**
    * Sql select statements for exporting, effective if type is sql
    */
-  private LinkedHashMap<String, String> sql = new LinkedHashMap<>();
+  private Map<String, String> sql = new LinkedHashMap<>();
 
   /**
    * Time zone for {@link DateFormatter} and {@link TimestampFormatter}
