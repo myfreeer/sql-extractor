@@ -32,7 +32,7 @@ public class FormatService {
     alternatives.put(Types.DECIMAL, Types.NUMERIC);
     alternatives.put(Types.SMALLINT, Types.NUMERIC);
     alternatives.put(Types.TINYINT, Types.NUMERIC);
-    alternatives.put(OracleTypes.BINARY_FLOAT, Types.NUMERIC);
+    alternatives.put(OracleTypes.BINARY_FLOAT, Types.FLOAT);
     alternatives.put(OracleTypes.BINARY_DOUBLE, Types.NUMERIC);
     alternatives.put(Types.FLOAT, Types.NUMERIC);
     alternatives.put(Types.DOUBLE, Types.NUMERIC);
