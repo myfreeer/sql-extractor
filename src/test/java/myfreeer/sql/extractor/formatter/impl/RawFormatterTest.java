@@ -71,7 +71,7 @@ public class RawFormatterTest {
 
   @Test
   public void type() {
-    assertEquals(FORMATTER.type(), Types.VARBINARY);
+    assertEquals(Types.VARBINARY, FORMATTER.type());
   }
 
 }

@@ -61,7 +61,7 @@ public class BlobFormatterTest {
   public void type() {
     final String s = Long.toHexString(ThreadLocalRandom.current().nextLong());
     final BlobFormatter blobFormatter = new BlobFormatter(s);
-    assertEquals(blobFormatter.type(), Types.BLOB);
+    assertEquals(Types.BLOB, blobFormatter.type());
   }
 
   @Test

@@ -16,7 +16,7 @@ public class TimestampFormatterTest extends DateFormatterTest {
 
   @Override
   public void type() {
-    assertEquals(formatter().type(), Types.TIMESTAMP);
+    assertEquals(Types.TIMESTAMP, formatter().type());
   }
 
   @Override

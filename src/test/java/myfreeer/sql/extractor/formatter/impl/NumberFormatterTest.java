@@ -43,7 +43,7 @@ public class NumberFormatterTest {
 
   @Test
   public void type() {
-    assertEquals(FORMATTER.type(), Types.NUMERIC);
+    assertEquals(Types.NUMERIC, FORMATTER.type());
   }
 
   @Test

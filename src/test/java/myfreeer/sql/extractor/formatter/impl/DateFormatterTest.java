@@ -74,7 +74,7 @@ public class DateFormatterTest {
 
   @Test
   public void type() {
-    assertEquals(formatter.type(), Types.DATE);
+    assertEquals(Types.DATE, formatter.type());
   }
 
   @Test
