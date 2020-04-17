@@ -55,7 +55,7 @@ public class ClobFormatter implements StreamingFormatter<Clob> {
             .append(toClobFn()).append(stringPrefix());
         continue;
       }
-      if (++lastLen == 2000) {
+      if (++lastLen == 1000) {
         writer.append("]')\n || ").append(toClobFn()).append(stringPrefix());
         lastLen = 0;
       }

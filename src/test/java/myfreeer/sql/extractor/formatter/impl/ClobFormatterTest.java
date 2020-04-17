@@ -114,29 +114,53 @@ public class ClobFormatterTest {
   @Test
   public void longStringClob() throws SQLException {
     final String s = randomFixedStr(4001);
-    assertEquals(formatter().toClobFn() + formatter().stringPrefix() + s.substring(0, 1999) + "]')\n" +
-            " || " + formatter().toClobFn() + formatter().stringPrefix() + s.substring(1999, 3999) + "]')\n" +
-            " || " + formatter().toClobFn() + formatter().stringPrefix() + s.substring(3999) + "]')",
-        formatter().format(resultSet(s), 1));
+    assertEquals(
+            formatter().toClobFn() +
+                    formatter().stringPrefix() + s.substring(0, 999) + "]')\n" +
+                    " || " + formatter().toClobFn() +
+                    formatter().stringPrefix() + s.substring(999, 1999) + "]')\n" +
+                    " || " + formatter().toClobFn() +
+                    formatter().stringPrefix() + s.substring(1999, 2999) + "]')\n" +
+                    " || " + formatter().toClobFn() +
+                    formatter().stringPrefix() + s.substring(2999, 3999) + "]')\n" +
+                    " || " + formatter().toClobFn() +
+                    formatter().stringPrefix() + s.substring(3999) + "]')",
+            formatter().format(resultSet(s), 1));
   }
 
   @Test
   public void longStringClob2() throws SQLException {
     final String s = randomFixedStr(4000);
-    assertEquals(formatter().toClobFn() + formatter().stringPrefix() + s.substring(0, 1999) + "]')\n" +
-            " || " + formatter().toClobFn() + formatter().stringPrefix() + s.substring(1999, 3999) + "]')\n" +
-            " || " + formatter().toClobFn() + formatter().stringPrefix() + s.substring(3999) + "]')",
-        formatter().format(resultSet(s), 1));
+    assertEquals(
+            formatter().toClobFn() +
+                    formatter().stringPrefix() + s.substring(0, 999) + "]')\n" +
+                    " || " + formatter().toClobFn() +
+                    formatter().stringPrefix() + s.substring(999, 1999) + "]')\n" +
+                    " || " + formatter().toClobFn() +
+                    formatter().stringPrefix() + s.substring(1999, 2999) + "]')\n" +
+                    " || " + formatter().toClobFn() +
+                    formatter().stringPrefix() + s.substring(2999, 3999) + "]')\n" +
+                    " || " + formatter().toClobFn() +
+                    formatter().stringPrefix() + s.substring(3999) + "]')",
+            formatter().format(resultSet(s), 1));
   }
 
   @Test
   public void longStringClobWithEscape() throws SQLException {
     final String s = randomFixedStr(4000);
-    assertEquals(formatter().toClobFn() + formatter().stringPrefix() + s.substring(0, 1999) + "]')\n" +
-            " || " + formatter().toClobFn() + formatter().stringPrefix() + s.substring(1999, 3999) + "]')\n" +
-            " || " + formatter().toClobFn() + formatter().stringPrefix() + s.substring(3999) + "]')\n" +
-            " || " + formatter().toClobFn() +
-            "(']') || " + formatter().toClobFn() + formatter().stringPrefix() + "]')",
-        formatter().format(resultSet(s + ']'), 1));
+    assertEquals(
+            formatter().toClobFn() +
+                    formatter().stringPrefix() + s.substring(0, 999) + "]')\n" +
+                    " || " + formatter().toClobFn() +
+                    formatter().stringPrefix() + s.substring(999, 1999) + "]')\n" +
+                    " || " + formatter().toClobFn() +
+                    formatter().stringPrefix() + s.substring(1999, 2999) + "]')\n" +
+                    " || " + formatter().toClobFn() +
+                    formatter().stringPrefix() + s.substring(2999, 3999) + "]')\n" +
+                    " || " + formatter().toClobFn() +
+                    formatter().stringPrefix() + s.substring(3999) + "]')\n" +
+                    " || " + formatter().toClobFn() + "(']') || " + formatter().toClobFn() +
+                    formatter().stringPrefix() + "]')",
+            formatter().format(resultSet(s + ']'), 1));
   }
 }
