@@ -18,7 +18,7 @@ public class NStringFormatter extends StringFormatter {
 
     @Override
     protected String escapingDelimiter() {
-        return "]' || n']' || n'[";
+        return "]' || n']' || nq'[";
     }
 
     @Override

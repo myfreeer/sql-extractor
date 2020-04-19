@@ -18,6 +18,34 @@ public class StringFormatterTest {
 
   private static final String RANDOM_STR;
   private static final StringFormatter FORMATTER = new StringFormatter();
+  protected static final String JSON_EXAMPLE_DATA =
+          // from https://opensource.adobe.com/Spry/samples/data_region/JSONDataSetSample.html
+          "{\n" +
+                  "\t\"id\": \"0001\",\n" +
+                  "\t\"type\": \"donut\",\n" +
+                  "\t\"name\": \"Cake\",\n" +
+                  "\t\"ppu\": 0.55,\n" +
+                  "\t\"batters\":\n" +
+                  "\t\t{\n" +
+                  "\t\t\t\"batter\":\n" +
+                  "\t\t\t\t[\n" +
+                  "\t\t\t\t\t{ \"id\": \"1001\", \"type\": \"Regular\" },\n" +
+                  "\t\t\t\t\t{ \"id\": \"1002\", \"type\": \"Chocolate\" },\n" +
+                  "\t\t\t\t\t{ \"id\": \"1003\", \"type\": \"Blueberry\" },\n" +
+                  "\t\t\t\t\t{ \"id\": \"1004\", \"type\": \"Devil's Food\" }\n" +
+                  "\t\t\t\t]\n" +
+                  "\t\t},\n" +
+                  "\t\"topping\":\n" +
+                  "\t\t[\n" +
+                  "\t\t\t{ \"id\": \"5001\", \"type\": \"None\" },\n" +
+                  "\t\t\t{ \"id\": \"5002\", \"type\": \"Glazed\" },\n" +
+                  "\t\t\t{ \"id\": \"5005\", \"type\": \"Sugar\" },\n" +
+                  "\t\t\t{ \"id\": \"5007\", \"type\": \"Powdered Sugar\" },\n" +
+                  "\t\t\t{ \"id\": \"5006\", \"type\": \"Chocolate with Sprinkles\" },\n" +
+                  "\t\t\t{ \"id\": \"5003\", \"type\": \"Chocolate\" },\n" +
+                  "\t\t\t{ \"id\": \"5004\", \"type\": \"Maple\" }\n" +
+                  "\t\t]\n" +
+                  "}";
 
   static {
     final Random random = ThreadLocalRandom.current();
@@ -110,5 +138,37 @@ public class StringFormatterTest {
   @Test
   public void escapingSuffix() {
     assertEquals("]' || ']')", getFormatter().escapingSuffix());
+  }
+
+  @Test
+  public void formatJson() throws SQLException {
+    assertEquals(
+                    "(q'[{\n" +
+                    "\t\"id\": \"0001\",\n" +
+                    "\t\"type\": \"donut\",\n" +
+                    "\t\"name\": \"Cake\",\n" +
+                    "\t\"ppu\": 0.55,\n" +
+                    "\t\"batters\":\n" +
+                    "\t\t{\n" +
+                    "\t\t\t\"batter\":\n" +
+                    "\t\t\t\t[\n" +
+                    "\t\t\t\t\t{ \"id\": \"1001\", \"type\": \"Regular\" },\n" +
+                    "\t\t\t\t\t{ \"id\": \"1002\", \"type\": \"Chocolate\" },\n" +
+                    "\t\t\t\t\t{ \"id\": \"1003\", \"type\": \"Blueberry\" },\n" +
+                    "\t\t\t\t\t{ \"id\": \"1004\", \"type\": \"Devil's Food\" }\n" +
+                    "\t\t\t\t]' || ']' || q'[\n" +
+                    "\t\t},\n" +
+                    "\t\"topping\":\n" +
+                    "\t\t[\n" +
+                    "\t\t\t{ \"id\": \"5001\", \"type\": \"None\" },\n" +
+                    "\t\t\t{ \"id\": \"5002\", \"type\": \"Glazed\" },\n" +
+                    "\t\t\t{ \"id\": \"5005\", \"type\": \"Sugar\" },\n" +
+                    "\t\t\t{ \"id\": \"5007\", \"type\": \"Powdered Sugar\" },\n" +
+                    "\t\t\t{ \"id\": \"5006\", \"type\": \"Chocolate with Sprinkles\" },\n" +
+                    "\t\t\t{ \"id\": \"5003\", \"type\": \"Chocolate\" },\n" +
+                    "\t\t\t{ \"id\": \"5004\", \"type\": \"Maple\" }\n" +
+                    "\t\t]' || ']' || q'[\n" +
+                    "}]')",
+            getFormatter().format(resultSet(JSON_EXAMPLE_DATA), 1));
   }
 }
