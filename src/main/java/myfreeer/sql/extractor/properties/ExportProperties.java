@@ -55,12 +55,20 @@ public class ExportProperties {
    */
   private Locale locale = Locale.getDefault();
 
-  public List<String> lowerCaseTables() {
-    return tables.stream().map(String::toLowerCase).collect(Collectors.toList());
+  /**
+   * Treat table or column names case sensitively or not
+   */
+  private boolean caseSensitive = false;
+
+  public List<String> tables() {
+    return caseSensitive ? tables :
+            tables.stream().map(String::toLowerCase).collect(Collectors.toList());
   }
 
-  public Set<String> lowerCaseExcludeTables() {
-    return excludeTables.stream().map(String::toLowerCase).collect(Collectors.toSet());
+  public Set<String> excludeTables() {
+    return caseSensitive ? excludeTables :
+            excludeTables.stream().map(String::toLowerCase)
+                    .collect(Collectors.toSet());
   }
 
   public enum ExportType {

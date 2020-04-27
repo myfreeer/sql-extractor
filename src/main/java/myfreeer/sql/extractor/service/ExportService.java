@@ -3,6 +3,7 @@ package myfreeer.sql.extractor.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import myfreeer.sql.extractor.formatter.impl.BlobFormatter;
+import myfreeer.sql.extractor.properties.ExportProperties;
 import myfreeer.sql.extractor.util.OracleClobToBlob;
 import myfreeer.sql.extractor.util.StringBuilderWriter;
 import org.springframework.core.NestedRuntimeException;
@@ -26,6 +27,7 @@ import java.util.*;
 public class ExportService {
   private final FormatService formatService;
   private final JdbcTemplate jdbcTemplate;
+  private final ExportProperties properties;
   private final Random random = new Random();
 
   /**
@@ -41,7 +43,7 @@ public class ExportService {
   /**
    * export all tables to string
    *
-   * @param excludeTables exclude tables, should be lower case
+   * @param excludeTables exclude tables
    * @return sql script in string
    * @throws IOException should never happen
    */
@@ -89,8 +91,26 @@ public class ExportService {
       @NonNull final Writer writer,
       @NonNull final String tableName,
       @Nullable final String clobToBlobFnName) throws IOException {
-    return exportTable(writer, tableName,
-        "select * from " + tableName, clobToBlobFnName);
+    return exportTable(writer, tableName, sqlForTable(tableName), clobToBlobFnName);
+  }
+
+  private boolean isCaseSensitive(@NonNull final String symbolName) {
+    boolean isCaseSensitive = false;
+    if (properties.isCaseSensitive()) {
+      for (int i = 0; i < symbolName.length(); i++) {
+        if (Character.isLowerCase(symbolName.charAt(i))) {
+          isCaseSensitive = true;
+          break;
+        }
+      }
+    }
+    return isCaseSensitive;
+  }
+
+  private String sqlForTable(@NonNull final String tableName) {
+    return isCaseSensitive(tableName) ?
+            "select * from \"" + tableName + "\"" :
+            "select * from " + tableName;
   }
 
   /**
@@ -120,7 +140,12 @@ public class ExportService {
           BlobFormatter blobFormatter = null;
           for (int i = 0, j; i < columnCount; i++) {
             j = i + 1;
-            columnName[j] = metaData.getColumnName(j);
+            String currColumnName = metaData.getColumnName(j);
+            if (isCaseSensitive(currColumnName)) {
+              columnName[j] = "\"" + metaData.getColumnName(j) + "\"";
+            } else {
+              columnName[j] = metaData.getColumnName(j);
+            }
             columnType[j] = metaData.getColumnType(j);
           }
           final String col = String.join(", ",
@@ -129,7 +154,13 @@ public class ExportService {
           while (rs.next()) {
             ++row;
             writer.write("insert into ");
-            writer.write(tableName);
+            if (isCaseSensitive(tableName)) {
+              writer.write('"');
+              writer.write(tableName);
+              writer.write('"');
+            } else {
+              writer.write(tableName);
+            }
             writer.write(" ( ");
             writer.write(col);
             writer.write(" )");
@@ -141,7 +172,8 @@ public class ExportService {
               if (!hasBlob && columnType[j] == Types.BLOB) {
                 hasBlob = true;
                 if (StringUtils.isEmpty(realClobToBlobFnName)) {
-                  realClobToBlobFnName = "CLOB_TO_BLOB_" + Long.toHexString(random.nextLong());
+                  realClobToBlobFnName =
+                          "CLOB_TO_BLOB_" + Long.toHexString(random.nextLong());
                 }
                 blobFormatter = new BlobFormatter(realClobToBlobFnName);
               }
@@ -196,7 +228,7 @@ public class ExportService {
    * export all tables to writer
    *
    * @param writer        writer to write sql script
-   * @param excludeTables exclude tables, should be lower case
+   * @param excludeTables exclude tables
    * @return clob to blob helper function name, null if not needed
    * @throws IOException writer IO fail
    */
@@ -208,7 +240,10 @@ public class ExportService {
     log.info("Full data export begins at {}", beginInstant);
     log.info("Querying tables...");
     final List<String> tables = jdbcTemplate.queryForList(
-        "select lower(TABLE_NAME) from USER_TABLES order by TABLE_NAME", String.class);
+            properties.isCaseSensitive() ?
+                    "select TABLE_NAME from USER_TABLES order by TABLE_NAME":
+                    "select lower(TABLE_NAME) from USER_TABLES order by TABLE_NAME",
+            String.class);
     log.info("Query table complete, {} tables found.", tables.size());
     final String s = exportTables(writer, tables, excludeTables);
 
@@ -250,7 +285,7 @@ public class ExportService {
         }
         log.info("[{}/{}] Export table {} complete.", i + 1, size, table);
       } catch (RuntimeException e) {
-        writer.write("--  Export ");
+        writer.write("\n--  Export ");
         writer.write(table);
         writer.write(" failed.");
         log.error("[{}/{}] Export table {} fail.", i + 1, size, table, e);

@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -46,22 +47,23 @@ public class SqlExtractorApplication {
     Path tempFile = null;
     try {
       tempFile = Files.createTempFile("sql_extract_temp_", ".sql");
+      tempFile.toFile().deleteOnExit();
       String clobToBlobFnName;
       try (final BufferedWriter writer = Files.newBufferedWriter(tempFile, UTF_8)) {
         switch (exportProperties.getType()) {
           case TABLE:
             clobToBlobFnName = exportService.exportTables(writer,
-                exportProperties.lowerCaseTables(),
-                exportProperties.lowerCaseExcludeTables());
+                exportProperties.tables(),
+                exportProperties.excludeTables());
             break;
           case SQL:
             clobToBlobFnName = exportService.exportTables(writer,
                 exportProperties.getSql(),
-                exportProperties.lowerCaseExcludeTables());
+                exportProperties.excludeTables());
             break;
           case FULL:
             clobToBlobFnName = exportService.exportAllTables(writer,
-                exportProperties.lowerCaseExcludeTables());
+                exportProperties.excludeTables());
             break;
           default:
             // should not reach here
@@ -72,7 +74,7 @@ public class SqlExtractorApplication {
       }
       final Path path = Paths.get(exportFilePath);
       if (clobToBlobFnName == null) {
-        Files.move(tempFile, path);
+        Files.move(tempFile, path, StandardCopyOption.REPLACE_EXISTING);
       } else {
         try (final OutputStream os = Files.newOutputStream(path);
              final InputStream is = Files.newInputStream(tempFile)) {
