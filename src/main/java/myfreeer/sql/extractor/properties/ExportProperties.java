@@ -58,7 +58,21 @@ public class ExportProperties {
   /**
    * Treat table or column names case sensitively or not
    */
-  private boolean caseSensitive = false;
+  private boolean caseSensitive = true;
+
+  /**
+   * Sql statement to get all table name case-sensitively from db,
+   * effective if type is full
+   */
+  private String sqlSelectTableNames =
+          "select TABLE_NAME from USER_TABLES order by TABLE_NAME";
+
+  /**
+   * Sql statement to get all table name in lower case from db,
+   * effective if type is full
+   */
+  private String sqlSelectLowerCaseTableNames =
+          "select lower(TABLE_NAME) from USER_TABLES order by TABLE_NAME";
 
   public List<String> tables() {
     return caseSensitive ? tables :
@@ -69,6 +83,10 @@ public class ExportProperties {
     return caseSensitive ? excludeTables :
             excludeTables.stream().map(String::toLowerCase)
                     .collect(Collectors.toSet());
+  }
+
+  public String sqlSelectTableNames() {
+    return caseSensitive ? sqlSelectTableNames : sqlSelectLowerCaseTableNames;
   }
 
   public enum ExportType {

@@ -240,10 +240,7 @@ public class ExportService {
     log.info("Full data export begins at {}", beginInstant);
     log.info("Querying tables...");
     final List<String> tables = jdbcTemplate.queryForList(
-            properties.isCaseSensitive() ?
-                    "select TABLE_NAME from USER_TABLES order by TABLE_NAME":
-                    "select lower(TABLE_NAME) from USER_TABLES order by TABLE_NAME",
-            String.class);
+            properties.sqlSelectTableNames(), String.class);
     log.info("Query table complete, {} tables found.", tables.size());
     final String s = exportTables(writer, tables, excludeTables);
 
